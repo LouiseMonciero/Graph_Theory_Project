@@ -203,3 +203,31 @@ class Graph:
         for task in self.graph :
             print("     "+str(task.rank)+"   |    "+str(task.name)+"     |   "+str(task.early_date[0])+"("+str( task.early_date[1].name if  task.early_date[1] != None else None)+")")
 
+    def compute_late_start(self):
+        #Tri des tâches selon leur rang
+        self.order_by_rank()
+
+        #Initialisation de la date au plus tard pour la tâche finale
+        last_task = self.graph[-1]       #On prend la derniere tache du graphe
+        last_task.late_date = (last_task.early_date[0], last_task)      # On utilise la convention que la date au plus tard de fin de projet soit égale à sa date au plus tôt.
+
+        # On parcourt les tâches en ordre inverse
+        for task in reversed(self.graph[:-1]): #Utilisation de la fonction "reversed" pour prendre la liste à l'envers
+            # Si la tâche a des successeurs, on calcule sa date au plus tard
+            if task.children:
+                min_late_date = (float('inf'),0) # Initialisation à l'infini pour être sûr qu'elle prenne notre résultat
+                #On parcourt tous les successeurs et on prend le plus petit
+                for child in task.children:
+                    min_late_date = min(min_late_date, child.late_date[0] - child.duration[task.name])
+
+                # On met à jour la date au plus tard
+                task.late_date = (min_late_date, task)
+            else:
+                # Si la tâche n'a pas de successeurs, sa date reste la même que la date au plus tôt
+                task.late_date = (task.early_date[0], task)
+
+    def display_late_start(self):
+        print("   rank   |   tasks   |   late_date(origin)")
+        for task in self.graph:
+            print("     " + str(task.rank) + "   |    " + str(task.name) + "     |   " + str(
+                task.late_date[0]) + "(" + str(task.late_date[1].name if task.late_date[1] != None else None) + ")")
