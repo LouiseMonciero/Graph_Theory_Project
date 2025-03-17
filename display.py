@@ -89,13 +89,14 @@ def Display():
                     graph.display_early_start()
 
                 elif choix == 6:
-                    graph.calculate_late_start() # à implémenter
+                    graph.calculate_late_start()
                     print("Affichage de la date au plus tard")
-                    graph.display_late_start() # à implémenter
+                    graph.display_late_start()
 
                 elif choix == 7:
+                    graph.compute_total_float()
                     print("Affichage des marges")
-                    graph.compute_floats()
+                    graph.display_total_float()
                     
                 elif choix == 8:
                     print("Affichage du chemin critique")

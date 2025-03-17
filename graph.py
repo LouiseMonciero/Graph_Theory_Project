@@ -8,6 +8,7 @@ class Task():  # représentation d'une tâche dans le graphe
         self.rank = 0  # rang de la tâche (pour l'ordonnancement)
         self.early_date = (0, None)  # (date au plus tôt de la tâche, predecesseur) (servira pour après)
         self.late_date = (0, None)  # (date au plus tard de la tâche, predecesseur) (servira pour après)
+        self.total_float = self.early_date[0] - self.late_date[0] 
 
     def set_dependencies(self,
                          dependencie):  # méthode qui permet d'ajouter les prédécesseurs dans la liste dependencies
@@ -214,7 +215,7 @@ class Graph:
             print("     " + str(task.rank) + "   |    " + str(task.name) + "     |   " + str(
                 task.early_date[0]) + "(" + str(task.early_date[1].name if task.early_date[1] != None else None) + ")")
 
-    def compute_late_start(self):
+    def calculate_late_start(self):
 
         self.set_rank()
         # Tri des tâches selon leur rang
@@ -259,38 +260,37 @@ class Graph:
             print("     " + str(task.rank) + "   |    " + str(task.name) + "     |   " + str(
                 task.late_date[0]) + "(" + str(task.late_date[1].name if task.late_date[1] != None else None) + ")")
 
-    def compute_floats(self):
+    def compute_total_float(self):
+
+        self.calculate_late_start()
+
+        for task in self.graph:
+            # recalcul de la marge totale (TF) : TF = LS - ES
+            task.total_float = task.late_date[0] - task.early_date[0]
+
+    def display_total_float(self):
 
         print("\nMargesTotales (TF) des tâches :\n")
         print(f"{'Tâche':<10}{'ES':<10}{'LS':<10}{'TF'}")
         print("-" * 35)
 
         for task in self.graph:
-            # récupération des dates au plus tôt et au plus tard
-            date_au_plus_tot = task.early_date[0]
-            date_au_plus_tard = task.late_date[0]
-
-            # calcul de la marge totale (TF) : TF = LS - ES
-            task.float_time = date_au_plus_tard - date_au_plus_tot
-
-            # affichage détaillé du calcul
-            print(f"{task.name:<10}{date_au_plus_tot:<10}{date_au_plus_tard:<10}{task.float_time}")
+            print(f"{task.name:<10}{task.late_date[0]:<10}{task.early_date[0]:<10}{task.total_float}")
 
     def display_critical_path(self):
-        # Affichage du chemin critique du projet.
-        chemin_critique = []
+
+        critical_path = []
 
         # Vérifie si les marges sont calculées
-        if not hasattr(self, 'marges_totales'):
-            self.compute_floats()
+        self.compute_total_float()
 
-        # Identification des tâches critiques (mT = 0)
+        # Identification des tâches critiques (marge Totales = 0)
         for task in self.graph:
-            if self.marges_totales[task.name] == 0:
-                chemin_critique.append(task)
+            if task.total_float == 0:
+                critical_path.append(task)
 
         # Tri des tâches critiques dans l'ordre chronologique (par date au plus tôt)
-        chemin_critique = sorted(chemin_critique, key=lambda x: x.early_date[0])
+        critical_path = sorted(critical_path, key=lambda x: x.early_date[0])
 
         # Affichage du chemin critique
-        print("Chemin critique : ", ' -> '.join(task.name for task in chemin_critique))
+        print("Chemin critique : ", ' -> '.join(task.name for task in critical_path))
