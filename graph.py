@@ -210,10 +210,12 @@ class Graph:
             task.early_date = maxi
 
     def display_early_start(self):
-        print("   rank   |   tasks   |   early_date(origin)")
+        print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tot(origine)':<20}")
+        print("-" * 45)
+
         for task in self.graph:
-            print("     " + str(task.rank) + "   |    " + str(task.name) + "     |   " + str(
-                task.early_date[0]) + "(" + str(task.early_date[1].name if task.early_date[1] != None else None) + ")")
+            print(f"{task.rank:<10}{task.name:<10}{str(
+                task.early_date[0]) + '(' + str(task.early_date[1].name if task.early_date[1] != None else None) + ')':<20}")
 
     def calculate_late_start(self):
 
@@ -253,10 +255,12 @@ class Graph:
                     task.late_date = (late_date_via_child, child)
 
     def display_late_start(self):
-        print("   rank   |   tasks   |   late_date(origin)")
+        print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tard(origine)':<20}")
+        print("-" * 45)
+
         for task in self.graph:
-            print("     " + str(task.rank) + "   |    " + str(task.name) + "     |   " + str(
-                task.late_date[0]) + "(" + str(task.late_date[1].name if task.late_date[1] != None else None) + ")")
+            print(f"{task.rank:<10}{task.name:<10}{str(
+                task.late_date[0]) + '(' + str(task.late_date[1].name if task.late_date[1] != None else None) + ')':<20}")
 
     def compute_total_float(self):
 
