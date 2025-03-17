@@ -222,22 +222,20 @@ class Graph:
         self.order_by_rank()
 
         # Calcul des dates au plus tot si cela n'est pas deja fait
-        if self.graph[0].early_date == (0, None):
+        if self.graph[len(self.graph) -1].early_date == (0, None):
             self.calculate_early_start()
-
-        # Réinitialiser la liste des enfants pour toutes les tâches
-        for task in self.graph:
-            task.children = []
 
         # Construire les relations de successeurs
         for task in self.graph:
+            # Réinitialiser la liste des enfants pour toutes les tâches
+            task.children = []
             for children in self.graph:
                 if task in children.dependencies:
                     task.set_children(children)
 
         # Initialisation de la date au plus tard pour la tâche finale
-        last_task = self.graph[-1]  # On prend la dernière tâche du graphe
-        last_task.late_date = (last_task.early_date[0], last_task)  # Convention: date au plus tard = date au plus tôt
+        last_task = self.graph[-1]
+        last_task.late_date = (last_task.early_date[0], None)  # Convention: date au plus tard = date au plus tôt
 
         # Initialisation des autres tâches avec une valeur infinie pour être sûr de prende la valeur calculées
         for task in self.graph[:-1]:  # Toutes les tâches sauf la dernière
