@@ -34,13 +34,13 @@ def Display():
             print("1 - Afficher le graphe sous forme de lignes")
             print("2 - Afficher la matrice des valeurs")
             print("3 - Vérifier si le graphe est un graphe d'ordonnancement")
-            #print("9 - Sauvegarder les résultats dans un fichier")
             if check_scheduling == 1:
                 print("4 - Afficher le rang de chaque tâche")
                 print("5 - Afficher la date au plus tôt")
                 print("6 - Afficher la date au plus tard")
                 print("7 - Afficher les marges")
                 print("8 - Afficher le chemin critique")
+            print("9 - Obtenir une traces de résulltat (analyse compléte)")
 
             
             while True: 
@@ -74,7 +74,7 @@ def Display():
                     check_scheduling = 0
 
             elif choix == 9:
-                graph.save_results(graph_number) #a activer à la fin pour la sauvegarde 
+                graph.save_results(graph_number)
             
             if check_scheduling != 1:
                 print("\nVous ne pouvez pas effectuer d'autres actions sur ce graphe.")
