@@ -344,9 +344,9 @@ class Graph:
             cycle = graph_copy.verify_cycle(False)  # Vérifie l'absence de cycles
             negative = self.check_negative_val(False)  # Vérifie l'absence de valeurs négatives
             if cycle and negative:  # Vérifie que le graphe est bien un graphe d'ordonnancement
-                print("✅ Le graphe ne contient aucun cycle, donc c'est un graphe d'ordonnancement.\n", file=f)
+                print("✅ Le graphe ne contient aucun cycle et aucune valeur négative, donc c'est un graphe d'ordonnancement.\n", file=f)
             else:
-                print("❌ Le graphe ne contient au moins un cycle, donc ce n'est pas un graphe d'ordonnancement.\n", file=f)
+                print("❌ Le graphe contient au moins un cycle, donc ce n'est pas un graphe d'ordonnancement.\n", file=f)
                 return
 
             f.write("\n\nRANG - DATE AU PLUS TARD - DATE AU PLUS TOT - MARGES\n")
