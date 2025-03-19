@@ -37,4 +37,4 @@ Rang      Taches    Date au plus tot(origine)Date au plus tard(origine)Marges To
 
 
 CHEMIN CRITIQUE
-Chemin critique :  0 -> 1 -> 2 -> 4 -> 3 -> 5
+Chemin critique :  0 -> 2 -> 4 -> 3 -> 5

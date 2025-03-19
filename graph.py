@@ -1,4 +1,5 @@
 from copy import deepcopy
+from itertools import product
 
 class Task():  # représentation d'une tâche dans le graphe
     def __init__(self, name, out_link=0):
@@ -290,21 +291,33 @@ class Graph:
 
     def display_critical_path(self, output_file=None):
 
-        critical_path = []
-
         # Vérifie si les marges sont calculées
         self.compute_total_float()
 
+        critical_nodes = [[] for _ in range(self.graph[len(self.graph)-1].rank + 1)]
+
         # Identification des tâches critiques (marge Totales = 0)
+
         for task in self.graph:
             if task.total_float == 0:
-                critical_path.append(task)
+                critical_nodes[task.rank].append(task)
 
-        # Tri des tâches critiques dans l'ordre chronologique (par date au plus tôt)
-        critical_path = sorted(critical_path, key=lambda x: x.early_date[0])
+        # Constitution des chemin critiques
+        all_possible_critical_paths = [list(comb) for comb in product(*critical_nodes)] #construction de tous les chemins critiques potentiels
+        critical_paths = []
+        for comb in all_possible_critical_paths :
+            valid = True
+            for i in range(1, len(comb)):
+                if comb[i] not in comb[i-1].children:
+                    valid = False
+                    break
+            if valid:
+                critical_paths.append(comb)
 
+        print(critical_paths)
         # Affichage du chemin critique
-        print("Chemin critique : ", ' -> '.join(task.name for task in critical_path), file=output_file)
+        for comb in critical_paths :
+            print("Chemin critique : ", ' -> '.join(task.name for task in comb), file=output_file)
 
     def display_scheduling(self, output_file=None):
         print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tot(origine)':<20}{'Date au plus tard(origine)':<20}{'Marges Totales':<15}", file=output_file)
