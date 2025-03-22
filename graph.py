@@ -1,5 +1,4 @@
 from copy import deepcopy
-from itertools import product
 
 class Task():  # représentation d'une tâche dans le graphe
     def __init__(self, name, out_link=0):
@@ -83,17 +82,17 @@ class Graph:
         if (output_file==None):
             print("\nMatrice des valeurs du graphe :")
 
-        # Calcul de la largeur max des colonnes
+        #Calcul de la largeur max des colonnes
         max_length = max(len(str(task.name)) for task in self.graph)
 
-        # Affichage de l'en-tête
+        #Affichage de l'en-tête
         header_format = "{:>" + str(max_length) + "}"
         print(header_format.format(""), end=" ", file=output_file)
         for task in self.graph:
             print(header_format.format(task.name), end=" ", file=output_file)
         print(file=output_file)
 
-        # Affichage de la matrice
+        #Affichage de la matrice
         for task in self.graph:
             print(header_format.format(task.name), end=" ", file=output_file)
             for target in self.graph:
@@ -280,44 +279,44 @@ class Graph:
             # recalcul de la marge totale (TF) : TF = LS - ES
             task.total_float = task.late_date[0] - task.early_date[0]
 
-    def display_total_float(self, output_file=None):
-
-        print("\nMargesTotales (TF) des tâches :\n", file=output_file)
-        print(f"{'Tâche':<10}{'ES':<10}{'LS':<10}{'TF'}", file=output_file)
-        print("-" * 35, file=output_file)
-
-        for task in self.graph:
-            print(f"{task.name:<10}{task.late_date[0]:<10}{task.early_date[0]:<10}{task.total_float}", file=output_file)
-
     def display_critical_path(self, output_file=None):
+        self.compute_total_float()  #s'assure que les marges sont bien calculées
 
-        # Vérifie si les marges sont calculées
-        self.compute_total_float()
+        #liste qui stocke les chemins critiques
+        all_critical_paths = []
 
-        critical_nodes = [[] for _ in range(self.graph[len(self.graph)-1].rank + 1)]
+        #parcours en profondeur récursif
+        def dfs(task, path):
+            if task.total_float != 0:
+                return  #ce n’est pas une tâche critique, on s’arrête
 
-        # Identification des tâches critiques (marge Totales = 0)
+            path.append(task)
 
-        for task in self.graph:
-            if task.total_float == 0:
-                critical_nodes[task.rank].append(task)
+            if not task.children:  #si on atteint ω (aucun successeur)
+                all_critical_paths.append(list(path))  # On sauvegarde le chemin complet
+            else:
+                for child in task.children:
+                    dfs(child, path) #appel récursif
 
-        # Constitution des chemin critiques
-        all_possible_critical_paths = [list(comb) for comb in product(*critical_nodes)] #construction de tous les chemins critiques potentiels
-        critical_paths = []
-        for comb in all_possible_critical_paths :
-            valid = True
-            for i in range(1, len(comb)):
-                if comb[i] not in comb[i-1].children:
-                    valid = False
-                    break
-            if valid:
-                critical_paths.append(comb)
+            path.pop()  
 
-        print(critical_paths)
-        # Affichage du chemin critique
-        for comb in critical_paths :
-            print("Chemin critique : ", ' -> '.join(task.name for task in comb), file=output_file)
+        #trouver le point d’entrée (souvent tâche '0')
+        start_tasks = [task for task in self.graph if task.name == '0']
+        if not start_tasks:
+            print("Pas de tâche de départ trouvée.", file=output_file)
+            return
+
+        #lancer la DFS depuis le point d'entrée
+        dfs(start_tasks[0], [])
+
+        #affichage des chemins critiques
+        if not all_critical_paths:
+            print("Aucun chemin critique trouvé.", file=output_file)
+        else:
+            for i, path in enumerate(all_critical_paths):
+                print(f"Chemin critique {i + 1} :", " -> ".join(task.name for task in path), file=output_file)
+
+
 
     def display_scheduling(self, output_file=None):
         print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tot(origine)':<20}{'Date au plus tard(origine)':<20}{'Marges Totales':<15}", file=output_file)
@@ -346,7 +345,7 @@ class Graph:
             if cycle and negative:  # Vérifie que le graphe est bien un graphe d'ordonnancement
                 print("✅ Le graphe ne contient aucun cycle et aucune valeur négative, donc c'est un graphe d'ordonnancement.\n", file=f)
             else:
-                print("❌ Le graphe contient au moins un cycle, donc ce n'est pas un graphe d'ordonnancement.\n", file=f)
+                print("❌ Le graphe contient au un cycle, donc ce n'est pas un graphe d'ordonnancement.\n", file=f)
                 return
 
             f.write("\n\nRANG - DATE AU PLUS TARD - DATE AU PLUS TOT - MARGES\n")
@@ -358,4 +357,3 @@ class Graph:
             self.display_critical_path(f)
 
         f.close()
-
