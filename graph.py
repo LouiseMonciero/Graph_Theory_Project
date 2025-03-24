@@ -279,6 +279,15 @@ class Graph:
             # recalcul de la marge totale (TF) : TF = LS - ES
             task.total_float = task.late_date[0] - task.early_date[0]
 
+    def display_total_float(self, output_file=None):
+
+        print("\nMargesTotales (TF) des tâches :\n", file=output_file)
+        print(f"{'Tâche':<10}{'ES':<10}{'LS':<10}{'TF'}", file=output_file)
+        print("-" * 35, file=output_file)
+
+        for task in self.graph:
+            print(f"{task.name:<10}{task.late_date[0]:<10}{task.early_date[0]:<10}{task.total_float}", file=output_file)
+
     def display_critical_path(self, output_file=None):
         self.compute_total_float()  #s'assure que les marges sont bien calculées
 
