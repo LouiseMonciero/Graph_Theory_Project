@@ -289,50 +289,51 @@ class Graph:
             print(f"{task.name:<10}{task.late_date[0]:<10}{task.early_date[0]:<10}{task.total_float}", file=output_file)
 
     def display_critical_path(self, output_file=None):
-        self.compute_total_float()  #s'assure que les marges sont bien calculées
+        self.compute_total_float()  # s'assure que les marges sont bien calculées
 
         # on vérifie si toutes les tâches ont une marge totale de 0 (on en aura besoin après)
         all_zero_margin = all(task.total_float == 0 for task in self.graph)
 
-        #liste qui stocke les chemins critiques trouvés
+        # durée totale du projet = date au plus tôt de la tâche finale
+        project_duration = self.graph[-1].early_date[0]
+
+        # liste qui stocke les chemins critiques trouvés
         all_critical_paths = []
 
-        #parcours en profondeur récursif
-        def dfs(task, path):
+        # parcours en profondeur récursif
+        def dfs(task, path, total_duration):
             if task.total_float != 0:
-                return  #tâche non critique, on ne continue pas
+                return  # tâche non critique, on ne continue pas
 
             path.append(task)
 
-            #si on atteint le sommet final (ω)
+            # si on atteint le sommet final (ω)
             if task.name == str(len(self.graph) - 1):
-                all_critical_paths.append(list(path))
+                if total_duration == project_duration:
+                    all_critical_paths.append(list(path))
             else:
                 for child in task.children:
-                    dfs(child, path)
+                    if task.name in child.duration:
+                        dfs(child, path, total_duration + child.duration[task.name])
 
-            path.pop() 
+            path.pop()
 
-        #trouver le point d’entrée (pour nous c'est la tâche 0)
+        # trouver le point d’entrée (pour nous c'est la tâche 0)
         start_tasks = [task for task in self.graph if task.name == '0']
         if not start_tasks:
             print("Pas de tâche de départ trouvée.", file=output_file)
             return
 
-        #lancer la DFS depuis le sommet 0
-        dfs(start_tasks[0], [])
+        # lancer la DFS depuis le sommet 0
+        dfs(start_tasks[0], [], 0)
 
-        #affichage des chemins critiques
+        # affichage des chemins critiques
         if not all_critical_paths:
             print("Aucun chemin critique trouvé.", file=output_file)
         else:
-            #si toutes les marges sont nulles, afficher tous les chemins critiques trouvés
-            if all_zero_margin:
-                for i, path in enumerate(all_critical_paths):
-                    print(f"Chemin critique {i + 1} :", " -> ".join(task.name for task in path), file=output_file)
-            else:
-                #sinon, afficher uniquement le premier chemin trouvé (le plus long)
-                print("Chemin critique :", " -> ".join(task.name for task in all_critical_paths[0]), file=output_file)
+            for i, path in enumerate(all_critical_paths):
+                print(f"Chemin critique {i + 1} :", " -> ".join(task.name for task in path), file=output_file)
+
 
 
 
