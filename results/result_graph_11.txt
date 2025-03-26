@@ -1,0 +1,123 @@
+===== Analyse du graphe table 11 =====
+
+=== 1. Affichage des relations entre tâches ===
+
+0 -> 1 = 0
+1 -> 2 = 1
+4 -> 2 = 2
+2 -> 3 = 1
+1 -> 4 = 1
+5 -> 4 = 5
+1 -> 5 = 1
+4 -> 6 = 2
+5 -> 6 = 5
+3 -> 7 = 4
+5 -> 7 = 5
+2 -> 8 = 1
+4 -> 8 = 2
+6 -> 8 = 6
+7 -> 8 = 3
+8 -> 9 = 0
+
+=== 2. Matrice des valeurs du graphe ===
+
+  0 1 2 3 4 5 6 7 8 9 
+0 - 0 - - - - - - - - 
+1 - - 1 - 1 1 - - - - 
+2 - - - 1 - - - - 1 - 
+3 - - - - - - - 4 - - 
+4 - - 2 - - - 2 - 2 - 
+5 - - - - 5 - 5 5 - - 
+6 - - - - - - - - 6 - 
+7 - - - - - - - - 3 - 
+8 - - - - - - - - - 0 
+9 - - - - - - - - - - 
+
+=== 3. Vérification du graphe ===
+Ce graphe est un graphe d’ordonnancement.
+
+=== 4. Rangs des tâches ===
+
+Liste des tâches avec leur rang :
+Tâche 0 → Rang : 0
+Tâche 1 → Rang : 1
+Tâche 5 → Rang : 2
+Tâche 4 → Rang : 3
+Tâche 2 → Rang : 4
+Tâche 6 → Rang : 4
+Tâche 3 → Rang : 5
+Tâche 7 → Rang : 6
+Tâche 8 → Rang : 7
+Tâche 9 → Rang : 8
+
+
+=== 5. Dates au plus tôt (Early Start - ES) ===
+
+Rang      Taches    Date au plus tot(origine)
+---------------------------------------------
+0         0         0(None)             
+1         1         0(0)                
+2         5         1(1)                
+3         4         6(5)                
+4         2         8(4)                
+4         6         8(4)                
+5         3         9(2)                
+6         7         13(3)               
+7         8         16(7)               
+8         9         16(8)               
+
+
+=== 6. Dates au plus tard (Late Start - LS) ===
+
+Rang      Taches    Date au plus tard(origine)
+---------------------------------------------
+0         0         0(1)                
+1         1         0(5)                
+2         5         1(4)                
+3         4         6(2)                
+4         2         8(3)                
+4         6         10(8)               
+5         3         9(7)                
+6         7         13(8)               
+7         8         16(9)               
+8         9         16(None)            
+
+
+=== 7. Marges totales (Total Float - TF) ===
+
+MargesTotales (TF) des tâches :
+
+Tâche     ES        LS        TF
+-----------------------------------
+0         0         0         0
+1         0         0         0
+5         1         1         0
+4         6         6         0
+2         8         8         0
+6         10        8         2
+3         9         9         0
+7         13        13        0
+8         16        16        0
+9         16        16        0
+
+
+=== 8. Chemins critiques ===
+
+Chemin critique 1 : 0 -> 1 -> 5 -> 4 -> 2 -> 3 -> 7 -> 8 -> 9
+
+
+=== 9. Résumé de l’ordonnancement ===
+
+Rang      Taches    Date au plus tot(origine)Date au plus tard(origine)Marges Totales 
+-------------------------------------------------------
+0         0         0(None)             0(1)                0              
+1         1         0(0)                0(5)                0              
+2         5         1(1)                1(4)                0              
+3         4         6(5)                6(2)                0              
+4         2         8(4)                8(3)                0              
+4         6         8(4)                10(8)               2              
+5         3         9(2)                9(7)                0              
+6         7         13(3)               13(8)               0              
+7         8         16(7)               16(9)               0              
+8         9         16(8)               16(None)            0              
+
