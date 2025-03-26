@@ -103,87 +103,111 @@ class Graph:
                           end=" ", file=output_file)  # - au lieu de 0 pour par confondre avec la durée du sommet alpha
             print(file=output_file)
 
-    def verify_cycle(self, display=True):
-        graph_copy = self.graph.copy()  # copie du graphe pour éviter de modifier l'original
+    def verify_cycle(self, display=True, output_file=None):
+        graph_copy = self.graph.copy()
 
         while True:
-            entry_nodes = [node for node in graph_copy if
-                           not node.dependencies]  # contient les points d'éntrées (sommets sans prédecesseurs)
+            entry_nodes = [node for node in graph_copy if not node.dependencies]
 
-            if not entry_nodes:  # Si plus aucun point d'entrée
-                if graph_copy:  # S'il reste des sommets -> Cycle détecté
-                    if (display):
+            if not entry_nodes:
+                if graph_copy:
+                    if display:
                         print("\n-> Le graphe contient un cycle ❌\n")
+                    if output_file:
+                        print("\n-> Le graphe contient un cycle ❌\n", file=output_file)
                     return False
-                if(display):
+                if display:
                     print("\n-> Il n’y a pas de circuit ✅\n")
+                if output_file:
+                    print("\n-> Il n’y a pas de circuit ✅\n", file=output_file)
                 return True
 
-            # Affichage des points d’entrée avant suppression
-            if(display):
+            if display:
                 print("Points d’entrée :", " ".join(node.name for node in entry_nodes))
+            if output_file:
+                print("Points d’entrée :", " ".join(node.name for node in entry_nodes), file=output_file)
 
-            # Suppression des points d’entrée
             for node in entry_nodes:
-                graph_copy.remove(node)  # supprimer les tâches sans prédécesseurs
+                graph_copy.remove(node)
                 for task in graph_copy:
                     if node in task.dependencies:
-                        task.dependencies.remove(node)  # supprimer les dépendances
+                        task.dependencies.remove(node)
 
-            # affichage des sommets restants après suppression
-            remaining_nodes = " ".join(node.name for node in
-                                       graph_copy) if graph_copy else "Aucun"  # si graph_copy est vide on affiche "Aucun"
-            if(display):
+            remaining_nodes = " ".join(node.name for node in graph_copy) if graph_copy else "Aucun"
+            if display:
                 print("Suppression des points d’entrée")
                 print(f"Sommets restant : {remaining_nodes}\n")
+            if output_file:
+                print("Suppression des points d’entrée", file=output_file)
+                print(f"Sommets restant : {remaining_nodes}\n", file=output_file)
 
-    def check_negative_val(self, display=True):
+
+    def check_negative_val(self, display=True, output_file=None):
+        if display:
+            print("Vérification des arcs à valeurs négatives :")
+        if output_file:
+            print("Vérification des arcs à valeurs négatives :", file=output_file)
+
         for task in self.graph:
             for dependencie in task.dependencies:
-                if task.duration[dependencie.name] < 0:
-                    if (display):
-                        print(
-                        f"--> Oui, le graphe contient une valeure négative : Tache {task.name} -> {dependencie.name} = {task.duration[dependencie.name]}\n")
+                val = task.duration[dependencie.name]
+                if display:
+                    print(f"  - Tâche {dependencie.name} -> {task.name} = {val}")
+                if output_file:
+                    print(f"  - Tâche {dependencie.name} -> {task.name} = {val}", file=output_file)
+
+                if val < 0:
+                    if display:
+                        print(f"--> Valeur négative détectée ❌ : {dependencie.name} -> {task.name} = {val}\n")
+                    if output_file:
+                        print(f"--> Valeur négative détectée ❌ : {dependencie.name} -> {task.name} = {val}\n", file=output_file)
                     return False
-        if(display):
-            print("--> Non, le graphe ne contient aucune valeure négative\n")
+
+        if display:
+            print("--> Aucun arc à valeur négative détecté ✅\n")
+        if output_file:
+            print("--> Aucun arc à valeur négative détecté ✅\n", file=output_file)
         return True
 
-    def set_rank(self):
+
+    def set_rank(self, output_file=None):
         def copy(self):
-            g_copy = Graph(self.lines)
-            return g_copy
+            return Graph(self.lines)
 
         g_copy = copy(self)  # copie du graphe
 
         rank = 0
         tasks_without_predecessors = []
         for task in g_copy.graph:
-            if not task.dependencies:  # Si la tâche n'a pas de prédécesseur
+            if not task.dependencies:
                 tasks_without_predecessors.append(task)
 
+        if output_file:
+            print("Début du calcul des rangs avec tri topologique :", file=output_file)
+
         while tasks_without_predecessors:
-            next_tasks = []  # Liste des tâches qui seront traitées au prochain rang
+            next_tasks = []
+
+            if output_file:
+                print(f"\nTâches sans prédécesseurs (rang {rank}) :", " ".join(t.name for t in tasks_without_predecessors), file=output_file)
 
             for task in tasks_without_predecessors:
-                task.rank = rank  # Assigner le rang actuel
-
-                # Parcourir les tâches qui dépendent de la tâche actuelle
+                task.rank = rank
                 for successor in g_copy.graph:
                     if task in successor.dependencies:
-                        successor.dependencies.remove(task)  # Supprimer la dépendance traitée
-                        if not successor.dependencies:  # Si plus de dépendance, la tâche suivante peut être traitée au prochain tour
+                        successor.dependencies.remove(task)
+                        if not successor.dependencies:
                             next_tasks.append(successor)
 
-            # Passer au rang suivant
             tasks_without_predecessors = next_tasks
             rank += 1
 
-            # associer les rangs au taches :
-            for task_copy in g_copy.graph:
-                for task in self.graph:
-                    if task.name == task_copy.name:
-                        task.rank = task_copy.rank
+        # Appliquer les rangs calculés à ton graphe principal
+        for task_copy in g_copy.graph:
+            for task in self.graph:
+                if task.name == task_copy.name:
+                    task.rank = task_copy.rank
+
 
     def print_rank(self, output_file=None):
         self.set_rank()  # a faire : faire en sorte de n'appeler qu'une fois set_rank pour tt le pgm
@@ -202,21 +226,37 @@ class Graph:
                     self.graph[i] = self.graph[j]
                     self.graph[j] = temp
 
-    def calculate_early_start(self):
-        self.set_rank()  # a faire : faire en sorte de n'appeler qu'une fois set_rank pour tt le pgm
+    def calculate_early_start(self, output_file=None):
+        self.set_rank()  # On peut garder l'appel pour s'assurer que les rangs sont là
         self.order_by_rank()  # Tri des tâches par rang
 
+        if output_file:
+            print("Début du calcul des dates au plus tôt (ES)", file=output_file)
+
         for task in self.graph:
-            dependencies_dates = []  # correspond a la ligne "dates par predecesseur"
+            dependencies_dates = []
+
+            if output_file:
+                print(f"\nTâche {task.name} (rang {task.rank}) :", file=output_file)
+
             for dependencie in task.dependencies:
-                dependencies_dates.append((dependencie.early_date[0] + task.duration[dependencie.name], dependencie))
+                val = dependencie.early_date[0] + task.duration[dependencie.name]
+                dependencies_dates.append((val, dependencie))
+                if output_file:
+                    print(f"  - depuis tâche {dependencie.name} : ES = {dependencie.early_date[0]} + durée = {task.duration[dependencie.name]} → {val}", file=output_file)
+
+            # Sélection du max
             maxi = (0, None)
             for i in range(len(dependencies_dates)):
-                if (maxi[1] == None):
+                if maxi[1] is None or dependencies_dates[i][0] > maxi[0]:
                     maxi = dependencies_dates[i]
-                if (maxi[0] < dependencies_dates[i][0]):
-                    maxi = dependencies_dates[i]
+
             task.early_date = maxi
+
+            if output_file:
+                origin = maxi[1].name if maxi[1] else "None"
+                print(f"  => Date au plus tôt retenue : {maxi[0]} (origine : {origin})", file=output_file)
+
 
     def display_early_start(self, output_file=None):
         print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tot(origine)':<20}", file=output_file)
@@ -226,42 +266,54 @@ class Graph:
             print(f"{task.rank:<10}{task.name:<10}{str(
                 task.early_date[0]) + '(' + str(task.early_date[1].name if task.early_date[1] != None else None) + ')':<20}", file=output_file)
 
-    def calculate_late_start(self):
-
+    def calculate_late_start(self, output_file=None):
         self.set_rank()
-        # Tri des tâches selon leur rang
         self.order_by_rank()
 
-        # Calcul des dates au plus tot si cela n'est pas deja fait
-        if self.graph[len(self.graph) -1].early_date == (0, None):
-            self.calculate_early_start()
+        if self.graph[-1].early_date == (0, None):
+            self.calculate_early_start(output_file=output_file)
 
-        # Construire les relations de successeurs
+        # Création des liens enfants (successeurs)
         for task in self.graph:
-            # Réinitialiser la liste des enfants pour toutes les tâches
             task.children = []
-            for children in self.graph:
-                if task in children.dependencies:
-                    task.set_children(children)
+            for child in self.graph:
+                if task in child.dependencies:
+                    task.set_children(child)
 
-        # Initialisation de la date au plus tard pour la tâche finale
+        # Initialisation
         last_task = self.graph[-1]
-        last_task.late_date = (last_task.early_date[0], None)  # Convention: date au plus tard = date au plus tôt
+        last_task.late_date = (last_task.early_date[0], None)
 
-        # Initialisation des autres tâches avec une valeur infinie pour être sûr de prende la valeur calculées
-        for task in self.graph[:-1]:  # Toutes les tâches sauf la dernière
+        if output_file:
+            print(f"\nInitialisation : tâche finale {last_task.name} → LS = {last_task.late_date[0]}", file=output_file)
+
+        for task in self.graph[:-1]:
             task.late_date = (float('inf'), None)
 
-        # On parcourt les tâches en ordre inverse de rang
-        for task in reversed(self.graph):
-            # Pour chaque successeur (enfant) de la tâche
-            for child in task.children:
-                # Date au plus tard du successeur - durée de l'arc entre la tâche actuelle et le successeur
-                late_date_via_child = child.late_date[0] - child.duration[task.name]
+        if output_file:
+            print("\nDébut du calcul des dates au plus tard (LS)", file=output_file)
 
-                # Si cette date est plus petite que la date actuelle, on la met à jour
-                if late_date_via_child < task.late_date[0]:
-                    task.late_date = (late_date_via_child, child)
+        # Parcours en ordre inverse
+        for task in reversed(self.graph):
+            if output_file:
+                print(f"\nTâche {task.name} (rang {task.rank}) :", file=output_file)
+
+            for child in task.children:
+                if task.name not in child.duration:
+                    continue  # sécurité
+
+                ls_child = child.late_date[0]
+                arc_duration = child.duration[task.name]
+                candidate_ls = ls_child - arc_duration
+
+                if output_file:
+                    print(f"  - via successeur {child.name} : LS = {ls_child} - durée = {arc_duration} → {candidate_ls}", file=output_file)
+
+                if candidate_ls < task.late_date[0]:
+                    task.late_date = (candidate_ls, child)
+                    if output_file:
+                        print(f"  => Nouvelle date au plus tard retenue : {candidate_ls} (via {child.name})", file=output_file)
+
 
     def display_late_start(self, output_file=None):
         print(f"{'Rang':<10}{'Taches':<10}{'Date au plus tard(origine)':<20}", file=output_file)
@@ -271,13 +323,21 @@ class Graph:
             print(f"{task.rank:<10}{task.name:<10}{str(
                 task.late_date[0]) + '(' + str(task.late_date[1].name if task.late_date[1] != None else None) + ')':<20}", file=output_file)
 
-    def compute_total_float(self):
-
+    def compute_total_float(self, output_file=None):
         self.calculate_late_start()
 
+        if output_file:
+            print("\nCalcul des marges totales (Total Float - TF) :", file=output_file)
+
         for task in self.graph:
-            # recalcul de la marge totale (TF) : TF = LS - ES
-            task.total_float = task.late_date[0] - task.early_date[0]
+            es = task.early_date[0]
+            ls = task.late_date[0]
+            tf = ls - es
+            task.total_float = tf
+
+            if output_file:
+                print(f"  - Tâche {task.name} : LS = {ls}, ES = {es} → TF = {tf}", file=output_file)
+
 
     def display_total_float(self, output_file=None):
 
@@ -363,8 +423,9 @@ class Graph:
 
             f.write("=== 3. Vérification du graphe ===\n")
             graph_copy = deepcopy(self)
-            cycle = graph_copy.verify_cycle(display=False)
-            negative = self.check_negative_val(display=False)
+            cycle = graph_copy.verify_cycle(display=False, output_file=f)
+            negative = self.check_negative_val(display=False, output_file=f)
+
 
             if not cycle or not negative:
                 f.write("Ce graphe n’est pas un graphe d’ordonnancement.\n")
@@ -372,27 +433,32 @@ class Graph:
             f.write("Ce graphe est un graphe d’ordonnancement.\n\n")
 
             f.write("=== 4. Rangs des tâches ===\n")
-            self.set_rank()
+            self.set_rank(output_file=f)
             self.print_rank(f)
             f.write("\n")
             f.write("\n")
 
             f.write("=== 5. Dates au plus tôt (Early Start - ES) ===\n")
             f.write("\n")
-            self.calculate_early_start()
+            self.calculate_early_start(output_file=f)
+            f.write("\n")
+            f.write("===Résultat des dates au plus tôt (Early Start - ES) ===\n")
+            f.write("\n")
             self.display_early_start(f)
             f.write("\n")
             f.write("\n")
 
             f.write("=== 6. Dates au plus tard (Late Start - LS) ===\n")
+            self.calculate_late_start(output_file=f)
             f.write("\n")
-            self.calculate_late_start()
+            f.write("===Résultat des dates au plus tard (Late Start - LS) ===\n")
+            f.write("\n")
             self.display_late_start(f)
             f.write("\n")
             f.write("\n")
 
             f.write("=== 7. Marges totales (Total Float - TF) ===\n")
-            self.compute_total_float()
+            self.compute_total_float(output_file=f)
             self.display_total_float(f)
             f.write("\n")
             f.write("\n")
