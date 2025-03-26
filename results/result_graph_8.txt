@@ -1,0 +1,326 @@
+===== Analyse du graphe table 8 =====
+
+=== 1. Affichage des relations entre tâches ===
+
+4 -> 1 = 4
+5 -> 1 = 5
+10 -> 1 = 10
+7 -> 2 = 7
+6 -> 3 = 6
+10 -> 3 = 10
+0 -> 4 = 0
+0 -> 5 = 0
+0 -> 6 = 0
+0 -> 7 = 0
+5 -> 8 = 5
+7 -> 8 = 7
+1 -> 9 = 1
+2 -> 9 = 2
+3 -> 9 = 3
+8 -> 9 = 9
+0 -> 10 = 0
+9 -> 11 = 9
+
+=== 2. Matrice des valeurs du graphe ===
+
+    0  1  2  3  4  5  6  7  8  9 10 11 
+ 0  -  -  -  -  0  0  0  0  -  -  0  - 
+ 1  -  -  -  -  -  -  -  -  -  1  -  - 
+ 2  -  -  -  -  -  -  -  -  -  2  -  - 
+ 3  -  -  -  -  -  -  -  -  -  3  -  - 
+ 4  -  4  -  -  -  -  -  -  -  -  -  - 
+ 5  -  5  -  -  -  -  -  -  5  -  -  - 
+ 6  -  -  -  6  -  -  -  -  -  -  -  - 
+ 7  -  -  7  -  -  -  -  -  7  -  -  - 
+ 8  -  -  -  -  -  -  -  -  -  9  -  - 
+ 9  -  -  -  -  -  -  -  -  -  -  -  9 
+10  - 10  - 10  -  -  -  -  -  -  -  - 
+11  -  -  -  -  -  -  -  -  -  -  -  - 
+
+=== 3. Vérification du graphe ===
+Points d’entrée : 0
+Suppression des points d’entrée
+Sommets restant : 1 2 3 4 5 6 7 8 9 10 11
+
+Points d’entrée : 4 5 6 7 10
+Suppression des points d’entrée
+Sommets restant : 1 2 3 8 9 11
+
+Points d’entrée : 1 2 3 8
+Suppression des points d’entrée
+Sommets restant : 9 11
+
+Points d’entrée : 9
+Suppression des points d’entrée
+Sommets restant : 11
+
+Points d’entrée : 11
+Suppression des points d’entrée
+Sommets restant : Aucun
+
+
+-> Il n’y a pas de circuit ✅
+
+Vérification des arcs à valeurs négatives :
+  - Tâche 4 -> 1 = 4
+  - Tâche 5 -> 1 = 5
+  - Tâche 10 -> 1 = 10
+  - Tâche 7 -> 2 = 7
+  - Tâche 6 -> 3 = 6
+  - Tâche 10 -> 3 = 10
+  - Tâche 0 -> 4 = 0
+  - Tâche 0 -> 5 = 0
+  - Tâche 0 -> 6 = 0
+  - Tâche 0 -> 7 = 0
+  - Tâche 5 -> 8 = 5
+  - Tâche 7 -> 8 = 7
+  - Tâche 1 -> 9 = 1
+  - Tâche 2 -> 9 = 2
+  - Tâche 3 -> 9 = 3
+  - Tâche 8 -> 9 = 9
+  - Tâche 0 -> 10 = 0
+  - Tâche 9 -> 11 = 9
+--> Aucun arc à valeur négative détecté ✅
+
+Ce graphe est un graphe d’ordonnancement.
+
+=== 4. Rangs des tâches ===
+Début du calcul des rangs avec tri topologique :
+
+Tâches sans prédécesseurs (rang 0) : 0
+
+Tâches sans prédécesseurs (rang 1) : 4 5 6 7 10
+
+Tâches sans prédécesseurs (rang 2) : 2 8 1 3
+
+Tâches sans prédécesseurs (rang 3) : 9
+
+Tâches sans prédécesseurs (rang 4) : 11
+
+Liste des tâches avec leur rang :
+Tâche 0 → Rang : 0
+Tâche 4 → Rang : 1
+Tâche 5 → Rang : 1
+Tâche 6 → Rang : 1
+Tâche 7 → Rang : 1
+Tâche 10 → Rang : 1
+Tâche 1 → Rang : 2
+Tâche 2 → Rang : 2
+Tâche 3 → Rang : 2
+Tâche 8 → Rang : 2
+Tâche 9 → Rang : 3
+Tâche 11 → Rang : 4
+
+
+=== 5. Dates au plus tôt (Early Start - ES) ===
+
+Début du calcul des dates au plus tôt (ES)
+
+Tâche 0 (rang 0) :
+  => Date au plus tôt retenue : 0 (origine : None)
+
+Tâche 4 (rang 1) :
+  - depuis tâche 0 : ES = 0 + durée = 0 → 0
+  => Date au plus tôt retenue : 0 (origine : 0)
+
+Tâche 5 (rang 1) :
+  - depuis tâche 0 : ES = 0 + durée = 0 → 0
+  => Date au plus tôt retenue : 0 (origine : 0)
+
+Tâche 6 (rang 1) :
+  - depuis tâche 0 : ES = 0 + durée = 0 → 0
+  => Date au plus tôt retenue : 0 (origine : 0)
+
+Tâche 7 (rang 1) :
+  - depuis tâche 0 : ES = 0 + durée = 0 → 0
+  => Date au plus tôt retenue : 0 (origine : 0)
+
+Tâche 10 (rang 1) :
+  - depuis tâche 0 : ES = 0 + durée = 0 → 0
+  => Date au plus tôt retenue : 0 (origine : 0)
+
+Tâche 3 (rang 2) :
+  - depuis tâche 6 : ES = 0 + durée = 6 → 6
+  - depuis tâche 10 : ES = 0 + durée = 10 → 10
+  => Date au plus tôt retenue : 10 (origine : 10)
+
+Tâche 1 (rang 2) :
+  - depuis tâche 4 : ES = 0 + durée = 4 → 4
+  - depuis tâche 5 : ES = 0 + durée = 5 → 5
+  - depuis tâche 10 : ES = 0 + durée = 10 → 10
+  => Date au plus tôt retenue : 10 (origine : 10)
+
+Tâche 8 (rang 2) :
+  - depuis tâche 5 : ES = 0 + durée = 5 → 5
+  - depuis tâche 7 : ES = 0 + durée = 7 → 7
+  => Date au plus tôt retenue : 7 (origine : 7)
+
+Tâche 2 (rang 2) :
+  - depuis tâche 7 : ES = 0 + durée = 7 → 7
+  => Date au plus tôt retenue : 7 (origine : 7)
+
+Tâche 9 (rang 3) :
+  - depuis tâche 1 : ES = 10 + durée = 1 → 11
+  - depuis tâche 2 : ES = 7 + durée = 2 → 9
+  - depuis tâche 3 : ES = 10 + durée = 3 → 13
+  - depuis tâche 8 : ES = 7 + durée = 9 → 16
+  => Date au plus tôt retenue : 16 (origine : 8)
+
+Tâche 11 (rang 4) :
+  - depuis tâche 9 : ES = 16 + durée = 9 → 25
+  => Date au plus tôt retenue : 25 (origine : 9)
+
+===Résultat des dates au plus tôt (Early Start - ES) ===
+
+Rang      Taches    Date au plus tot(origine)
+---------------------------------------------
+0         0         0(None)             
+1         4         0(0)                
+1         5         0(0)                
+1         6         0(0)                
+1         7         0(0)                
+1         10        0(0)                
+2         3         10(10)              
+2         1         10(10)              
+2         8         7(7)                
+2         2         7(7)                
+3         9         16(8)               
+4         11        25(9)               
+
+
+=== 6. Dates au plus tard (Late Start - LS) ===
+
+Initialisation : tâche finale 11 → LS = 25
+
+Début du calcul des dates au plus tard (LS)
+
+Tâche 11 (rang 4) :
+
+Tâche 9 (rang 3) :
+  - via successeur 11 : LS = 25 - durée = 9 → 16
+  => Nouvelle date au plus tard retenue : 16 (via 11)
+
+Tâche 2 (rang 2) :
+  - via successeur 9 : LS = 16 - durée = 2 → 14
+  => Nouvelle date au plus tard retenue : 14 (via 9)
+
+Tâche 8 (rang 2) :
+  - via successeur 9 : LS = 16 - durée = 9 → 7
+  => Nouvelle date au plus tard retenue : 7 (via 9)
+
+Tâche 1 (rang 2) :
+  - via successeur 9 : LS = 16 - durée = 1 → 15
+  => Nouvelle date au plus tard retenue : 15 (via 9)
+
+Tâche 3 (rang 2) :
+  - via successeur 9 : LS = 16 - durée = 3 → 13
+  => Nouvelle date au plus tard retenue : 13 (via 9)
+
+Tâche 10 (rang 1) :
+  - via successeur 3 : LS = 13 - durée = 10 → 3
+  => Nouvelle date au plus tard retenue : 3 (via 3)
+  - via successeur 1 : LS = 15 - durée = 10 → 5
+
+Tâche 7 (rang 1) :
+  - via successeur 8 : LS = 7 - durée = 7 → 0
+  => Nouvelle date au plus tard retenue : 0 (via 8)
+  - via successeur 2 : LS = 14 - durée = 7 → 7
+
+Tâche 6 (rang 1) :
+  - via successeur 3 : LS = 13 - durée = 6 → 7
+  => Nouvelle date au plus tard retenue : 7 (via 3)
+
+Tâche 5 (rang 1) :
+  - via successeur 1 : LS = 15 - durée = 5 → 10
+  => Nouvelle date au plus tard retenue : 10 (via 1)
+  - via successeur 8 : LS = 7 - durée = 5 → 2
+  => Nouvelle date au plus tard retenue : 2 (via 8)
+
+Tâche 4 (rang 1) :
+  - via successeur 1 : LS = 15 - durée = 4 → 11
+  => Nouvelle date au plus tard retenue : 11 (via 1)
+
+Tâche 0 (rang 0) :
+  - via successeur 4 : LS = 11 - durée = 0 → 11
+  => Nouvelle date au plus tard retenue : 11 (via 4)
+  - via successeur 5 : LS = 2 - durée = 0 → 2
+  => Nouvelle date au plus tard retenue : 2 (via 5)
+  - via successeur 6 : LS = 7 - durée = 0 → 7
+  - via successeur 7 : LS = 0 - durée = 0 → 0
+  => Nouvelle date au plus tard retenue : 0 (via 7)
+  - via successeur 10 : LS = 3 - durée = 0 → 3
+
+===Résultat des dates au plus tard (Late Start - LS) ===
+
+Rang      Taches    Date au plus tard(origine)
+---------------------------------------------
+0         0         0(7)                
+1         4         11(1)               
+1         5         2(8)                
+1         6         7(3)                
+1         7         0(8)                
+1         10        3(3)                
+2         3         13(9)               
+2         1         15(9)               
+2         8         7(9)                
+2         2         14(9)               
+3         9         16(11)              
+4         11        25(None)            
+
+
+=== 7. Marges totales (Total Float - TF) ===
+
+Calcul des marges totales (Total Float - TF) :
+  - Tâche 0 : LS = 0, ES = 0 → TF = 0
+  - Tâche 4 : LS = 11, ES = 0 → TF = 11
+  - Tâche 5 : LS = 2, ES = 0 → TF = 2
+  - Tâche 6 : LS = 7, ES = 0 → TF = 7
+  - Tâche 7 : LS = 0, ES = 0 → TF = 0
+  - Tâche 10 : LS = 3, ES = 0 → TF = 3
+  - Tâche 3 : LS = 13, ES = 10 → TF = 3
+  - Tâche 1 : LS = 15, ES = 10 → TF = 5
+  - Tâche 8 : LS = 7, ES = 7 → TF = 0
+  - Tâche 2 : LS = 14, ES = 7 → TF = 7
+  - Tâche 9 : LS = 16, ES = 16 → TF = 0
+  - Tâche 11 : LS = 25, ES = 25 → TF = 0
+
+MargesTotales (TF) des tâches :
+
+Tâche     ES        LS        TF
+-----------------------------------
+0         0         0         0
+4         11        0         11
+5         2         0         2
+6         7         0         7
+7         0         0         0
+10        3         0         3
+3         13        10        3
+1         15        10        5
+8         7         7         0
+2         14        7         7
+9         16        16        0
+11        25        25        0
+
+
+=== 8. Chemins critiques ===
+
+Chemin critique 1 : 0 -> 7 -> 8 -> 9 -> 11
+
+
+=== 9. Résumé de l’ordonnancement ===
+
+Rang      Taches    Date au plus tot(origine)Date au plus tard(origine)Marges Totales 
+-------------------------------------------------------
+0         0         0(None)             0(7)                0              
+1         4         0(0)                11(1)               11             
+1         5         0(0)                2(8)                2              
+1         6         0(0)                7(3)                7              
+1         7         0(0)                0(8)                0              
+1         10        0(0)                3(3)                3              
+2         3         10(10)              13(9)               3              
+2         1         10(10)              15(9)               5              
+2         8         7(7)                7(9)                0              
+2         2         7(7)                14(9)               7              
+3         9         16(8)               16(11)              0              
+4         11        25(9)               25(None)            0              
+

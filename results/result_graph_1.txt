@@ -1,0 +1,84 @@
+===== Analyse du graphe table 1 =====
+
+=== 1. Affichage des relations entre tâches ===
+
+0 -> 1 = 0
+0 -> 2 = 0
+1 -> 3 = 2
+2 -> 4 = 5
+3 -> 4 = 4
+13 -> 4 = 9
+4 -> 5 = 2
+5 -> 6 = 5
+6 -> 7 = 5
+7 -> 8 = 9
+8 -> 9 = 2
+11 -> 10 = 1
+4 -> 11 = 2
+3 -> 12 = 4
+6 -> 13 = 5
+12 -> 13 = 1
+9 -> 14 = 5
+10 -> 14 = 1
+
+=== 2. Matrice des valeurs du graphe ===
+
+    0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 
+ 0  -  0  0  -  -  -  -  -  -  -  -  -  -  -  - 
+ 1  -  -  -  2  -  -  -  -  -  -  -  -  -  -  - 
+ 2  -  -  -  -  5  -  -  -  -  -  -  -  -  -  - 
+ 3  -  -  -  -  4  -  -  -  -  -  -  -  4  -  - 
+ 4  -  -  -  -  -  2  -  -  -  -  -  2  -  -  - 
+ 5  -  -  -  -  -  -  5  -  -  -  -  -  -  -  - 
+ 6  -  -  -  -  -  -  -  5  -  -  -  -  -  5  - 
+ 7  -  -  -  -  -  -  -  -  9  -  -  -  -  -  - 
+ 8  -  -  -  -  -  -  -  -  -  2  -  -  -  -  - 
+ 9  -  -  -  -  -  -  -  -  -  -  -  -  -  -  5 
+10  -  -  -  -  -  -  -  -  -  -  -  -  -  -  1 
+11  -  -  -  -  -  -  -  -  -  -  1  -  -  -  - 
+12  -  -  -  -  -  -  -  -  -  -  -  -  -  1  - 
+13  -  -  -  -  9  -  -  -  -  -  -  -  -  -  - 
+14  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - 
+
+=== 3. Vérification du graphe ===
+Points d’entrée : 0
+Suppression des points d’entrée
+Sommets restant : 1 2 3 4 5 6 7 8 9 10 11 12 13 14
+
+Points d’entrée : 1 2
+Suppression des points d’entrée
+Sommets restant : 3 4 5 6 7 8 9 10 11 12 13 14
+
+Points d’entrée : 3
+Suppression des points d’entrée
+Sommets restant : 4 5 6 7 8 9 10 11 12 13 14
+
+Points d’entrée : 12
+Suppression des points d’entrée
+Sommets restant : 4 5 6 7 8 9 10 11 13 14
+
+
+-> Le graphe contient un cycle ❌
+
+Vérification des arcs à valeurs négatives :
+  - Tâche 0 -> 1 = 0
+  - Tâche 0 -> 2 = 0
+  - Tâche 1 -> 3 = 2
+  - Tâche 2 -> 4 = 5
+  - Tâche 3 -> 4 = 4
+  - Tâche 13 -> 4 = 9
+  - Tâche 4 -> 5 = 2
+  - Tâche 5 -> 6 = 5
+  - Tâche 6 -> 7 = 5
+  - Tâche 7 -> 8 = 9
+  - Tâche 8 -> 9 = 2
+  - Tâche 11 -> 10 = 1
+  - Tâche 4 -> 11 = 2
+  - Tâche 3 -> 12 = 4
+  - Tâche 6 -> 13 = 5
+  - Tâche 12 -> 13 = 1
+  - Tâche 9 -> 14 = 5
+  - Tâche 10 -> 14 = 1
+--> Aucun arc à valeur négative détecté ✅
+
+Ce graphe n’est pas un graphe d’ordonnancement.
