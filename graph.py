@@ -347,33 +347,64 @@ class Graph:
                 task.late_date[0]) + '(' + str(task.late_date[1].name if task.late_date[1] != None else None) + ')':<20}{task.total_float:<15}", file=output_file)
 
     def save_results(self, graph_number):
+        output_path = f"results/result_graph_{graph_number}.txt"
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(f"===== Analyse du graphe table {graph_number} =====\n\n")
 
-        with open("results/result_graph_"+str(graph_number)+".txt", "w") as f:
-            f.write("RESULTATS DU GRAPHE N°"+str(graph_number)+"")
-
-            f.write("\n\nGRAPHE SOUS FORME DE LIGNE\n")
+            f.write("=== 1. Affichage des relations entre tâches ===\n")
+            f.write("\n")
             self.print_graph(f)
+            f.write("\n")
 
-            f.write("\n\nMATRICE DE VALEURS\n")
+            f.write("=== 2. Matrice des valeurs du graphe ===\n")
+            f.write("\n")
             self.print_matrix(f)
+            f.write("\n")
 
-            f.write("\n\nORDONANCEMENT\n")
+            f.write("=== 3. Vérification du graphe ===\n")
             graph_copy = deepcopy(self)
-            cycle = graph_copy.verify_cycle(False)  # Vérifie l'absence de cycles
-            negative = self.check_negative_val(False)  # Vérifie l'absence de valeurs négatives
-            if cycle and negative:  # Vérifie que le graphe est bien un graphe d'ordonnancement
-                print("✅ Le graphe ne contient aucun cycle et aucune valeur négative, donc c'est un graphe d'ordonnancement.\n", file=f)
-            else:
-                print("❌ Le graphe contient au un cycle, donc ce n'est pas un graphe d'ordonnancement.\n", file=f)
+            cycle = graph_copy.verify_cycle(display=False)
+            negative = self.check_negative_val(display=False)
+
+            if not cycle or not negative:
+                f.write("Ce graphe n’est pas un graphe d’ordonnancement.\n")
                 return
+            f.write("Ce graphe est un graphe d’ordonnancement.\n\n")
 
-            f.write("\n\nRANG - DATE AU PLUS TARD - DATE AU PLUS TOT - MARGES\n")
-            self.compute_total_float() #appel des fonctions
+            f.write("=== 4. Rangs des tâches ===\n")
+            self.set_rank()
+            self.print_rank(f)
+            f.write("\n")
+            f.write("\n")
 
-            self.display_scheduling(f)
+            f.write("=== 5. Dates au plus tôt (Early Start - ES) ===\n")
+            f.write("\n")
+            self.calculate_early_start()
+            self.display_early_start(f)
+            f.write("\n")
+            f.write("\n")
 
-            f.write("\n\nCHEMIN CRITIQUE\n")
+            f.write("=== 6. Dates au plus tard (Late Start - LS) ===\n")
+            f.write("\n")
+            self.calculate_late_start()
+            self.display_late_start(f)
+            f.write("\n")
+            f.write("\n")
+
+            f.write("=== 7. Marges totales (Total Float - TF) ===\n")
+            self.compute_total_float()
+            self.display_total_float(f)
+            f.write("\n")
+            f.write("\n")
+
+            f.write("=== 8. Chemins critiques ===\n")
+            f.write("\n")
             self.display_critical_path(f)
+            f.write("\n")
+            f.write("\n")
 
-        f.close()
+            f.write("=== 9. Résumé de l’ordonnancement ===\n")
+            f.write("\n")
+            self.display_scheduling(f)
+            f.write("\n")
 
